@@ -18,7 +18,30 @@ CustomRender iframeRender({NavigationDelegate? navigationDelegate}) =>
         child: CssBoxWidget(
           style: context.style,
           childIsReplaced: true,
-          child: WebView(
+          child: WebViewWidget(
+            key: key,
+            gestureRecognizers: {
+              Factory<VerticalDragGestureRecognizer>(
+                () => VerticalDragGestureRecognizer(),
+              ),
+            },
+            controller: WebViewController()
+              ..setJavaScriptMode(
+                sandboxMode == null || sandboxMode == "allow-scripts"
+                    ? JavaScriptMode.unrestricted
+                    : JavaScriptMode.disabled,
+              )
+              ..setNavigationDelegate(
+                  navigationDelegate ?? NavigationDelegate())
+              ..loadRequest(
+                  Uri.parse(context.tree.element?.attributes['src'] ?? '')),
+          ),
+        ),
+      );
+    });
+
+/*
+child: WebView(
             initialUrl: context.tree.element?.attributes['src'],
             key: key,
             javascriptMode:
@@ -31,6 +54,5 @@ CustomRender iframeRender({NavigationDelegate? navigationDelegate}) =>
                   () => VerticalDragGestureRecognizer())
             },
           ),
-        ),
-      );
-    });
+
+ */
